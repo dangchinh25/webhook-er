@@ -14,6 +14,7 @@ export const env = cleanEnv( process.env, {
     POSTGRES_PORT: str( { default: undefined } ),
     POSTGRES_DB: str( { default: undefined } ),
     DATABASE_URL: str( { default: undefined } ),
+    HOST_URL: str( { default: 'http://localhost:3000' } ),
     LOG_LEVEL: str( { default: 'debug' } ),
     IS_LOCAL: str( { default: undefined } )
 } );
