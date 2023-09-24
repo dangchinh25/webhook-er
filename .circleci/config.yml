@@ -45,20 +45,19 @@ jobs:
       - run:
           name: Set Database Environment Variables
           command: |
-            echo "POSTGRES_DB=$POSTGRES_DB" >> .env
+            echo "POSTGRES_DB=webhook_er" >> .env
             echo "POSTGRES_HOST=127.0.0.1" >> .env
-            echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> .env
-            echo "POSTGRES_PORT=$POSTGRES_PORT" >> .env
-            echo "POSTGRES_USER=$POSTGRES_USER" >> .env
+            echo "POSTGRES_PASSWORD=123456789" >> .env
+            echo "POSTGRES_PORT=5432" >> .env
+            echo "POSTGRES_USER=cleAdmin" >> .env
 
-            echo "DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@127.0.0.1:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=require" >> .env
+            echo "DATABASE_URL=postgresql://cleAdmin:123456789@127.0.0.1:5432/webhook_er" >> .env
 
             cat .env
       - run:
           name: Create Empty Temporary Database & Docker Compose
           command: |
             npm run temp-database-up
-            docker ps
       - run:
           name: Migrate database
           command: |
