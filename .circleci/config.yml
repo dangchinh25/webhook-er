@@ -105,8 +105,7 @@ workflows:
   test-deploy-releases:
     jobs:
       - unit-tests
-      - integration-tests:
-          context: Webhook-Er
+      - integration-tests
       - database-migration:
           context: Webhook-Er
           requires:
