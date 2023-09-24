@@ -7,7 +7,6 @@ const trpcCaller = appRouter.createCaller( {} );
 describe( 'createWebhook', () => {
     describe( 'generic success flow', () => {
         it( 'creates webhook in database', async () => {
-
             const input: inferProcedureInput<AppRouter['createWebhook']> = {
                 payload: { test: 'test-data' },
                 deliveryAddress: 'http://localhost:3000/something'
