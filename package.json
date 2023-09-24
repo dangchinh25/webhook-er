@@ -11,8 +11,7 @@
     "temp-database-down": "docker-compose down",
     "generate-migration": "drizzle-kit generate:pg",
     "migrate": "drizzle-kit push:pg",
-    "test:int": "jest --config jest/integrationTests.config.json --forceExit",
-    "test:int-detect-handles": "jest --config jest/integrationTests.config.json --detectOpenHandles",
+    "test:int": "IS_INTEGRATION_TEST=true jest --config jest/integrationTests.config.json --forceExit",
     "test:unit": "jest --config jest/unitTests.config.json"
   },
   "dependencies": {
@@ -22,6 +21,7 @@
     "@trpc/react-query": "^10.38.3",
     "@trpc/server": "^10.38.3",
     "autoprefixer": "10.4.15",
+    "axios": "^1.5.0",
     "drizzle-orm": "^0.28.6",
     "drizzle-zod": "^0.5.1",
     "envalid": "^7.3.1",
