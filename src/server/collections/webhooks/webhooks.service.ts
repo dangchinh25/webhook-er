@@ -31,3 +31,16 @@ export const getWebhook = async (
 
     return success( webhook );
 };
+
+export const updateWebhook = async (
+    id: typeof Webhook.$inferSelect['id'],
+    params: Partial<Omit<typeof Webhook.$inferInsert, 'createdAt' | 'updatedAt'>>
+): Promise<Either<ResourceError, typeof Webhook.$inferSelect>> => {
+    const [ updatedWebhook ] = await dbClient
+        .update( Webhook )
+        .set( params )
+        .where( eq( Webhook.id, id ) )
+        .returning();
+
+    return success( updatedWebhook );
+};

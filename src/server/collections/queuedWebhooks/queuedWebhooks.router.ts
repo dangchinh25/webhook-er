@@ -1,5 +1,7 @@
+import { RequestMethod } from '../../types';
+import { makeRequest } from '../../lib/externalApiRequest';
 import { publicProcedure, router } from '../../trpc';
-import { getWebhook } from '../webhooks/webhooks.service';
+import { getWebhook, updateWebhook } from '../webhooks/webhooks.service';
 import { queuedWebhookSchema } from './queuedWebhooks.validation';
 
 export const queuedWebhooksRouter = router( {
@@ -10,6 +12,38 @@ export const queuedWebhooksRouter = router( {
 
             const getWebhookResult = await getWebhook( webhookId );
 
-            return getWebhookResult.value;
+            if ( getWebhookResult.isError() ) {
+                return getWebhookResult.value;
+            }
+
+            const {
+                deliveryAddress, payload, attemptNumber, deliveredAt
+            } = getWebhookResult.value;
+
+            if ( deliveredAt ) {
+                return {};
+            }
+
+            const sendWebhookResult = await makeRequest( {
+                method: RequestMethod.POST,
+                url: deliveryAddress,
+                body: payload as Record<string, unknown>
+            } );
+
+            if ( sendWebhookResult.isError() ) {
+                await updateWebhook(
+                    webhookId,
+                    { attemptNumber: attemptNumber + 1 }
+                );
+
+                return sendWebhookResult.value;
+            }
+
+            await updateWebhook(
+                webhookId,
+                { deliveredAt: new Date() }
+            );
+
+            return {};
         } )
 } );
