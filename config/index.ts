@@ -18,5 +18,6 @@ export const env = cleanEnv( process.env, {
     QSTASH_TOKEN: str( { default: undefined } ),
     QSTASH_URL: str( { default: undefined } ),
     LOG_LEVEL: str( { default: 'debug' } ),
-    IS_LOCAL: str( { default: undefined } )
+    IS_LOCAL: str( { default: undefined } ),
+    IS_INTEGRATION_TEST: str( { default: 'false' } )
 } );

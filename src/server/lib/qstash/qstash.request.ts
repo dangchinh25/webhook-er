@@ -21,6 +21,10 @@ export const qstashServiceRequest = async <T>( {
     destinationUrl,
     payload
 }: QstashServiceRequestParams ): Promise<Either<ResourceError, T>> => {
+    if ( env.IS_INTEGRATION_TEST === 'true' ) {
+        return success( {} as T );
+    }
+
     try {
         const axiosInstanceParams: AxiosRequestConfig = {
             method,

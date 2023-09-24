@@ -11,8 +11,7 @@
     "temp-database-down": "docker-compose down",
     "generate-migration": "drizzle-kit generate:pg",
     "migrate": "drizzle-kit push:pg",
-    "test:int": "jest --config jest/integrationTests.config.json --forceExit",
-    "test:int-detect-handles": "jest --config jest/integrationTests.config.json --detectOpenHandles",
+    "test:int": "IS_INTEGRATION_TEST=true jest --config jest/integrationTests.config.json --forceExit",
     "test:unit": "jest --config jest/unitTests.config.json"
   },
   "dependencies": {
