@@ -1,0 +1,1 @@
+ALTER TABLE "webhooks" ALTER COLUMN "payload" SET DATA TYPE jsonb;
