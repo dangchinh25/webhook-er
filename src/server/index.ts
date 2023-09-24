@@ -1,9 +1,14 @@
-import { livelinessRouter, webhooksRouter } from './collections';
+import {
+    livelinessRouter,
+    webhooksRouter,
+    queuedWebhooksRouter
+} from './collections';
 import { mergeRouters } from './trpc';
 
 export const appRouter = mergeRouters(
     livelinessRouter,
-    webhooksRouter
+    webhooksRouter,
+    queuedWebhooksRouter
 );
 
 export type AppRouter = typeof appRouter;
