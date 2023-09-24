@@ -51,13 +51,14 @@ jobs:
             echo "POSTGRES_PORT=$POSTGRES_PORT" >> .env
             echo "POSTGRES_USER=$POSTGRES_USER" >> .env
 
-            echo "DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@127.0.0.1:${POSTGRES_PORT}/${POSTGRES_DB}" >> .env
+            echo "DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@127.0.0.1:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=require" >> .env
 
             cat .env
       - run:
           name: Create Empty Temporary Database & Docker Compose
           command: |
             npm run temp-database-up
+            docker ps
       - run:
           name: Migrate database
           command: |
