@@ -1,0 +1,11 @@
+{
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "rootDir": "../",
+    "testPathIgnorePatterns": [
+        "<rootDir>/dist",
+        "<rootDir>/node_modules",
+        "<rootDir>/src/app",
+        "<rootDir>/src/server/tests"
+    ]
+}
