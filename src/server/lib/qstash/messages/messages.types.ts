@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export type PublishMessageResponse = {
     messageId: string;
     url: string;
@@ -7,5 +6,5 @@ export type PublishMessageResponse = {
 
 export type PublishMessageParams = {
     destinationUrl: string;
-    payload: Record<string, any>;
+    payload: Record<string, unknown>;
 };
