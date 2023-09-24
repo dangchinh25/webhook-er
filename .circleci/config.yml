@@ -1,0 +1,37 @@
+version: 2.1
+
+jobs:
+  database-migration:
+    docker:
+      - image: cimg/node:16.15.0
+    steps:
+      - checkout
+      - restore_cache:
+          key: v1-deps-{{ checksum "package-lock.json" }}-{{ checksum "src/db/schema.ts" }}
+      - run:
+          name: Install Dependencies
+          command: npm i
+      - save_cache:
+          key: v1-deps-{{ checksum "package-lock.json" }}-{{ checksum "src/db/schema.ts" }}
+          paths:
+            - node_modules
+      - run:
+          name: Set Database Environment Variables
+          command: |
+            echo "POSTGRES_DB=$POSTGRES_DB" >> .env
+            echo "POSTGRES_HOST=$POSTGRES_HOST" >> .env
+            echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> .env
+            echo "POSTGRES_PORT=$POSTGRES_PORT" >> .env
+            echo "POSTGRES_USER=$POSTGRES_USER" >> .env
+
+            echo "DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=require" >> .env
+
+workflows:
+  test-deploy-releases:
+    jobs:
+      - database-migration:
+          context: Webhook-Er
+          filters:
+            branches:
+              only:
+                - main
