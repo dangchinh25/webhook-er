@@ -1,7 +1,7 @@
 import { type Config } from 'drizzle-kit';
 import { env } from './config';
 
-const DATABASE_URL = `postgresql://${ env.POSTGRES_USER }:${ env.POSTGRES_PASSWORD }@${ env.POSTGRES_HOST }:${ env.POSTGRES_PORT }/${ env.POSTGRES_DB }?schema=public`;
+const DATABASE_URL = `postgresql://${ env.POSTGRES_USER }:${ env.POSTGRES_PASSWORD }@${ env.POSTGRES_HOST }:${ env.POSTGRES_PORT }/${ env.POSTGRES_DB }?sslmode=verify-full`;
 
 export default {
     schema: './src/db/schema.ts',
