@@ -9,5 +9,7 @@
     ],
     "testMatch": [
         "<rootDir>/src/server/tests/**/*.test.ts"
-    ]
+    ],
+    "silent": true,
+    "clearMocks": true
 }
