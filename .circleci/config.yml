@@ -25,7 +25,11 @@ jobs:
             echo "POSTGRES_USER=$POSTGRES_USER" >> .env
 
             echo "DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=require" >> .env
-
+            cat .env
+      - run: 
+          name: Migrate database
+          command: |
+            npm run migrate
 workflows:
   test-deploy-releases:
     jobs:
