@@ -58,6 +58,7 @@ jobs:
           name: Create Empty Temporary Database & Docker Compose
           command: |
             npm run temp-database-up
+      - run: sleep 5
       - run:
           name: Migrate database
           command: |
