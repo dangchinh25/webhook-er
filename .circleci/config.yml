@@ -33,8 +33,6 @@ jobs:
           command: |
             nvm install 16.15.0
             node -v
-      - restore_cache:
-          key: v1-deps-{{ checksum "package-lock.json" }}-{{ checksum "src/db/schema.ts" }}
       - run:
           name: Install Dependencies
           command: npm i
