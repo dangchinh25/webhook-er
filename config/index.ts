@@ -15,6 +15,8 @@ export const env = cleanEnv( process.env, {
     POSTGRES_DB: str( { default: undefined } ),
     DATABASE_URL: str( { default: undefined } ),
     HOST_URL: str( { default: 'http://localhost:3000' } ),
+    QSTASH_TOKEN: str( { default: undefined } ),
+    QSTASH_URL: str( { default: undefined } ),
     LOG_LEVEL: str( { default: 'debug' } ),
     IS_LOCAL: str( { default: undefined } )
 } );
