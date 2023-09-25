@@ -1,4 +1,6 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, {
+    AxiosHeaders, AxiosRequestConfig, AxiosResponse
+} from 'axios';
 import { env } from '../../../../config';
 import { QstashServiceRequestParams } from './qstash.types';
 import {
@@ -19,7 +21,8 @@ const axiosInstance = axios.create( {
 export const qstashServiceRequest = async <T>( {
     method,
     destinationUrl,
-    payload
+    payload,
+    customHeaders
 }: QstashServiceRequestParams ): Promise<Either<ResourceError, T>> => {
     if ( env.IS_INTEGRATION_TEST === 'true' ) {
         return success( {} as T );
@@ -31,6 +34,10 @@ export const qstashServiceRequest = async <T>( {
             url: `${ env.QSTASH_URL }/${ destinationUrl }`,
             data: payload
         };
+
+        if ( customHeaders ) {
+            axiosInstanceParams.headers = customHeaders as AxiosHeaders;
+        }
 
         const response = await axiosInstance( axiosInstanceParams );
 
