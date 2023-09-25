@@ -3,8 +3,7 @@ import { publishMessage as publishQstashMessage } from '../../lib/qstash';
 import { publicProcedure, router } from '../../trpc';
 import { createWebhook } from './webhooks.service';
 import { CreateWebhooksResponse } from './webhooks.types';
-import { createWebhookSchema } from './webhooks.validation';
-import { z } from 'zod';
+import { createWebhookSchema, createWebhooksSchema } from './webhooks.validation';
 
 export const webhooksRouter = router( {
     createWebhook: publicProcedure
@@ -25,8 +24,10 @@ export const webhooksRouter = router( {
             return createWebhookResult.value;
         } ),
     createWebhooks: publicProcedure
-        .input( z.array( createWebhookSchema ) )
-        .mutation( async ( { input: createWebhooksParams } ) => {
+        .input( createWebhooksSchema )
+        .mutation( async ( { input } ) => {
+            const { webhooks: createWebhooksParams } = input;
+
             const createWebhooksResponse: CreateWebhooksResponse = {
                 successes: [],
                 failures: []
