@@ -21,3 +21,23 @@ export const publishMessage = async (
 
     return success( requestResult.value );
 };
+
+export const publishMessageWithDelay = async (
+    params: PublishMessageParams,
+    deliveryTime: Date | string
+): Promise<Either<ResourceError, PublishMessageResponse>> => {
+    const deliveryTimeSeconds = Math.floor( new Date( deliveryTime ).getTime() / 1000 );
+
+    const requestResult = await qstashServiceRequest<PublishMessageResponse>( {
+        method: RequestMethod.POST,
+        destinationUrl: params.destinationUrl,
+        payload: params.payload,
+        customHeaders: { [ 'Upstash-Not-Before' ]: deliveryTimeSeconds }
+    } );
+
+    if ( requestResult.isError() ) {
+        return error( requestResult.value );
+    }
+
+    return success( requestResult.value );
+};

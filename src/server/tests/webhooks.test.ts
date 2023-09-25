@@ -2,6 +2,7 @@ import { inferProcedureInput } from '@trpc/server';
 import { AppRouter, appRouter } from '..';
 import * as WebhookServiceModule from '../collections/webhooks/webhooks.service';
 import * as QstashMessageServiceModule from '../lib/qstash/messages/messages.service';
+import * as QstashServiceModule from '../lib/qstash/qstash.request';
 import { error, success } from '../types';
 import { ResourceError } from '../errors';
 
@@ -81,6 +82,74 @@ describe( 'createWebhooks', () => {
             expect( publishMessageSpy ).toHaveBeenCalledWith( {
                 payload: { webhookId: createWebhook2Result.value.id },
                 destinationUrl: 'https://localhost:3000/api/queued-webhooks'
+            } );
+
+            expect( createWebhooksResult ).toStrictEqual( {
+                successes: expect.toIncludeAllMembers( [
+                    {
+                        params: input.webhooks[ 0 ],
+                        webhook: createWebhook1Result.value
+                    },
+                    {
+                        params: input.webhooks[ 1 ],
+                        webhook: createWebhook2Result.value
+                    }
+                ] ),
+                failures: []
+            } );
+        } );
+    } );
+
+    describe( 'contains both instant and delay delivery', () => {
+        it( 'creates webhook in database and calls qstash service with correct headers', async () => {
+            const input: inferProcedureInput<AppRouter['createWebhooks']> = {
+                webhooks: [
+                    {
+                        payload: { test: 'test-data-1' },
+                        deliveryAddress: 'http://localhost:3001/something'
+                    },
+                    {
+                        payload: { test: 'test-data-2' },
+                        deliveryAddress: 'http://localhost:3002/something',
+                        deliveryTime: new Date( new Date().getTime() + ( 5 * 1000 ) ).toISOString()
+                    }
+                ]
+            };
+
+            const createWebhookSpy = jest.spyOn( WebhookServiceModule, 'createWebhook' );
+            const qstashServiceRequestSpy = jest.spyOn( QstashServiceModule, 'qstashServiceRequest' );
+
+            const createWebhooksResult = await trpcCaller.createWebhooks( input );
+
+            expect( createWebhookSpy ).toHaveBeenCalledTimes( 2 );
+            expect( createWebhookSpy ).toHaveBeenCalledWith( {
+                payload: input.webhooks[ 0 ].payload,
+                deliveryAddress: input.webhooks[ 0 ].deliveryAddress,
+                attemptNumber: 1
+            } );
+            expect( createWebhookSpy ).toHaveBeenCalledWith( {
+                payload: input.webhooks[ 1 ].payload,
+                deliveryAddress: input.webhooks[ 1 ].deliveryAddress,
+                attemptNumber: 1
+            } );
+
+            const createWebhook1Result = await createWebhookSpy.mock.results[ 0 ].value;
+            const createWebhook2Result = await createWebhookSpy.mock.results[ 1 ].value;
+
+            expect( qstashServiceRequestSpy ).toHaveBeenCalledTimes( 2 );
+            expect( qstashServiceRequestSpy ).toHaveBeenCalledWith( {
+                method: 'POST',
+                destinationUrl: 'https://localhost:3000/api/queued-webhooks',
+                payload: { webhookId: createWebhook1Result.value.id }
+            } );
+            expect( qstashServiceRequestSpy ).toHaveBeenCalledWith( {
+                method: 'POST',
+                destinationUrl: 'https://localhost:3000/api/queued-webhooks',
+                payload: { webhookId: createWebhook2Result.value.id },
+                customHeaders: {
+                    [ 'Upstash-Not-Before' ]:
+                        Math.floor( new Date( input.webhooks[ 1 ].deliveryTime! ).getTime() / 1000 )
+                }
             } );
 
             expect( createWebhooksResult ).toStrictEqual( {
