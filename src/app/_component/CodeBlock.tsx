@@ -11,7 +11,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 const CodeBlock = ({ code, language }: any) => {
   const [copied, setCopied] = useState(false);
   const notify = () => {
-    toast(<ToastDisplay className="bg-neutral-700 m-2" />);
+    toast(<ToastDisplay />);
     copy();
   };
 
