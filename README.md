@@ -2,7 +2,7 @@
 
 - A simple Webhook delivery service that builds on top of NextJs serverless App Router, Upstash message queue, and NeonDB.
 
-<img src="./assets/architecture.png" alt="Architecture" />
+<img src="./public/architecture.png" alt="Architecture" />
 
 ## Prerequisites
 
