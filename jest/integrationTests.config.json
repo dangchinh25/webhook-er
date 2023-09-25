@@ -11,5 +11,8 @@
         "<rootDir>/src/server/tests/**/*.test.ts"
     ],
     "silent": true,
-    "clearMocks": true
+    "clearMocks": true,
+    "setupFilesAfterEnv": [
+        "jest-extended/all"
+    ]
 }
