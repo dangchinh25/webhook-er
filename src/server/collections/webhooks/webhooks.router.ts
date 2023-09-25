@@ -1,6 +1,6 @@
 import { Webhook } from '../../../db';
 import { publicProcedure, router } from '../../trpc';
-import { createWebhook } from './webhooks.service';
+import { createWebhook, updateWebhook } from './webhooks.service';
 import { CreateWebhooksResponse } from './webhooks.types';
 import { createWebhookSchema, createWebhooksSchema } from './webhooks.validation';
 import { env } from '../../../../config';
@@ -18,7 +18,8 @@ export const webhooksRouter = router( {
             const createWebhookResult = await createWebhook( {
                 payload,
                 deliveryAddress,
-                attemptNumber: 1
+                attemptNumber: 1,
+                type: 'instant'
             } );
 
             if ( createWebhookResult.isError() ) {
@@ -44,7 +45,8 @@ export const webhooksRouter = router( {
                     createWebhook( {
                         payload: createWebhookParams.payload,
                         deliveryAddress: createWebhookParams.deliveryAddress,
-                        attemptNumber: 1
+                        attemptNumber: 1,
+                        type: createWebhookParams.deliveryTime ? 'delayed' : 'instant'
                     } )
                 );
             }
@@ -104,6 +106,21 @@ export const webhooksRouter = router( {
                     webhook: successCreateWebhooks[ i ]
                 } );
             }
+
+            const updateWebhooksStatusPromises: ReturnType<typeof updateWebhook>[] = [];
+
+            for ( const { webhook } of createWebhooksResponse.successes ) {
+                updateWebhooksStatusPromises.push(
+                    updateWebhook(
+                        webhook.id,
+                        { status: 'queued' }
+                    )
+                );
+            }
+
+            // As the app will be deployed on Serverless function
+            // we have to await otherwise the execution will be aborted
+            await Promise.all( updateWebhooksStatusPromises );
 
             return createWebhooksResponse;
         } )
