@@ -54,7 +54,7 @@ describe( 'processQueuedWebhook', () => {
             expect( updateWebhookSpy ).toHaveBeenCalledTimes( 1 );
             expect( updateWebhookSpy ).toHaveBeenCalledWith(
                 webhook.id,
-                { deliveredAt: expect.anything() }
+                { deliveredAt: expect.anything(), status: 'delivered' }
             );
         } );
     } );

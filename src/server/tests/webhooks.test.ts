@@ -24,7 +24,8 @@ describe( 'createWebhook', () => {
             expect( createWebhookSpy ).toHaveBeenCalledWith( {
                 payload: input.payload,
                 deliveryAddress: input.deliveryAddress,
-                attemptNumber: 1
+                attemptNumber: 1,
+                type: 'instant'
             } );
 
             expect( createWebhookResult ).toStrictEqual(
@@ -55,6 +56,7 @@ describe( 'createWebhooks', () => {
             };
 
             const createWebhookSpy = jest.spyOn( WebhookServiceModule, 'createWebhook' );
+            const updateWebhookSpy = jest.spyOn( WebhookServiceModule, 'updateWebhook' );
             const publishMessageSpy = jest.spyOn( QstashMessageServiceModule, 'publishMessage' );
 
             const createWebhooksResult = await trpcCaller.createWebhooks( input );
@@ -63,12 +65,14 @@ describe( 'createWebhooks', () => {
             expect( createWebhookSpy ).toHaveBeenCalledWith( {
                 payload: input.webhooks[ 0 ].payload,
                 deliveryAddress: input.webhooks[ 0 ].deliveryAddress,
-                attemptNumber: 1
+                attemptNumber: 1,
+                type: 'instant'
             } );
             expect( createWebhookSpy ).toHaveBeenCalledWith( {
                 payload: input.webhooks[ 1 ].payload,
                 deliveryAddress: input.webhooks[ 1 ].deliveryAddress,
-                attemptNumber: 1
+                attemptNumber: 1,
+                type: 'instant'
             } );
 
             const createWebhook1Result = await createWebhookSpy.mock.results[ 0 ].value;
@@ -83,6 +87,16 @@ describe( 'createWebhooks', () => {
                 payload: { webhookId: createWebhook2Result.value.id },
                 destinationUrl: 'https://localhost:3000/api/queued-webhooks'
             } );
+
+            expect( updateWebhookSpy ).toHaveBeenCalledTimes( 2 );
+            expect( updateWebhookSpy ).toHaveBeenCalledWith(
+                createWebhook1Result.value.id,
+                { status: 'queued' }
+            );
+            expect( updateWebhookSpy ).toHaveBeenCalledWith(
+                createWebhook2Result.value.id,
+                { status: 'queued' }
+            );
 
             expect( createWebhooksResult ).toStrictEqual( {
                 successes: expect.toIncludeAllMembers( [
@@ -117,6 +131,7 @@ describe( 'createWebhooks', () => {
             };
 
             const createWebhookSpy = jest.spyOn( WebhookServiceModule, 'createWebhook' );
+            const updateWebhookSpy = jest.spyOn( WebhookServiceModule, 'updateWebhook' );
             const qstashServiceRequestSpy = jest.spyOn( QstashServiceModule, 'qstashServiceRequest' );
 
             const createWebhooksResult = await trpcCaller.createWebhooks( input );
@@ -125,12 +140,14 @@ describe( 'createWebhooks', () => {
             expect( createWebhookSpy ).toHaveBeenCalledWith( {
                 payload: input.webhooks[ 0 ].payload,
                 deliveryAddress: input.webhooks[ 0 ].deliveryAddress,
-                attemptNumber: 1
+                attemptNumber: 1,
+                type: 'instant'
             } );
             expect( createWebhookSpy ).toHaveBeenCalledWith( {
                 payload: input.webhooks[ 1 ].payload,
                 deliveryAddress: input.webhooks[ 1 ].deliveryAddress,
-                attemptNumber: 1
+                attemptNumber: 1,
+                type: 'delayed'
             } );
 
             const createWebhook1Result = await createWebhookSpy.mock.results[ 0 ].value;
@@ -151,6 +168,16 @@ describe( 'createWebhooks', () => {
                         Math.floor( new Date( input.webhooks[ 1 ].deliveryTime! ).getTime() / 1000 )
                 }
             } );
+
+            expect( updateWebhookSpy ).toHaveBeenCalledTimes( 2 );
+            expect( updateWebhookSpy ).toHaveBeenCalledWith(
+                createWebhook1Result.value.id,
+                { status: 'queued' }
+            );
+            expect( updateWebhookSpy ).toHaveBeenCalledWith(
+                createWebhook2Result.value.id,
+                { status: 'queued' }
+            );
 
             expect( createWebhooksResult ).toStrictEqual( {
                 successes: expect.toIncludeAllMembers( [
@@ -184,6 +211,7 @@ describe( 'createWebhooks', () => {
             };
 
             const createWebhookSpy = jest.spyOn( WebhookServiceModule, 'createWebhook' );
+            const updateWebhookSpy = jest.spyOn( WebhookServiceModule, 'updateWebhook' );
             const publishMessageSpy = jest.spyOn( QstashMessageServiceModule, 'publishMessage' );
 
             publishMessageSpy.mockImplementationOnce( async () => success( { messageId: '', url: '' } ) );
@@ -195,12 +223,14 @@ describe( 'createWebhooks', () => {
             expect( createWebhookSpy ).toHaveBeenCalledWith( {
                 payload: input.webhooks[ 0 ].payload,
                 deliveryAddress: input.webhooks[ 0 ].deliveryAddress,
-                attemptNumber: 1
+                attemptNumber: 1,
+                type: 'instant'
             } );
             expect( createWebhookSpy ).toHaveBeenCalledWith( {
                 payload: input.webhooks[ 1 ].payload,
                 deliveryAddress: input.webhooks[ 1 ].deliveryAddress,
-                attemptNumber: 1
+                attemptNumber: 1,
+                type: 'instant'
             } );
 
             const createWebhook1Result = await createWebhookSpy.mock.results[ 0 ].value;
@@ -215,6 +245,12 @@ describe( 'createWebhooks', () => {
                 payload: { webhookId: createWebhook2Result.value.id },
                 destinationUrl: 'https://localhost:3000/api/queued-webhooks'
             } );
+
+            expect( updateWebhookSpy ).toHaveBeenCalledTimes( 1 );
+            expect( updateWebhookSpy ).toHaveBeenCalledWith(
+                createWebhook1Result.value.id,
+                { status: 'queued' }
+            );
 
             expect( createWebhooksResult ).toStrictEqual( {
                 successes: expect.toIncludeAllMembers( [
@@ -249,6 +285,7 @@ describe( 'createWebhooks', () => {
             };
 
             const createWebhookSpy = jest.spyOn( WebhookServiceModule, 'createWebhook' );
+            const updateWebhookSpy = jest.spyOn( WebhookServiceModule, 'updateWebhook' );
             const publishMessageSpy = jest.spyOn( QstashMessageServiceModule, 'publishMessage' );
 
             createWebhookSpy.mockImplementationOnce( async () => error( new ResourceError( { message: '' } ) ) );
@@ -259,12 +296,14 @@ describe( 'createWebhooks', () => {
             expect( createWebhookSpy ).toHaveBeenCalledWith( {
                 payload: input.webhooks[ 0 ].payload,
                 deliveryAddress: input.webhooks[ 0 ].deliveryAddress,
-                attemptNumber: 1
+                attemptNumber: 1,
+                type: 'instant'
             } );
             expect( createWebhookSpy ).toHaveBeenCalledWith( {
                 payload: input.webhooks[ 1 ].payload,
                 deliveryAddress: input.webhooks[ 1 ].deliveryAddress,
-                attemptNumber: 1
+                attemptNumber: 1,
+                type: 'instant'
             } );
 
             const createWebhook2Result = await createWebhookSpy.mock.results[ 1 ].value;
@@ -274,6 +313,12 @@ describe( 'createWebhooks', () => {
                 payload: { webhookId: createWebhook2Result.value.id },
                 destinationUrl: 'https://localhost:3000/api/queued-webhooks'
             } );
+
+            expect( updateWebhookSpy ).toHaveBeenCalledTimes( 1 );
+            expect( updateWebhookSpy ).toHaveBeenCalledWith(
+                createWebhook2Result.value.id,
+                { status: 'queued' }
+            );
 
             expect( createWebhooksResult ).toStrictEqual( {
                 successes: expect.toIncludeAllMembers( [

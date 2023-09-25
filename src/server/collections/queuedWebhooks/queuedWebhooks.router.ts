@@ -41,7 +41,7 @@ export const queuedWebhooksRouter = router( {
 
             await updateWebhook(
                 webhookId,
-                { deliveredAt: new Date() }
+                { deliveredAt: new Date(), status: 'delivered' }
             );
 
             return {};
