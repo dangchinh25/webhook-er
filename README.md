@@ -1,5 +1,9 @@
 # Webhook-Er
 
+- A simple Webhook delivery service that builds on top of NextJs serverless App Router, Upstash message queue, and NeonDB.
+
+<img src="./assets/architecture.png" alt="Architecture" />
+
 ## Prerequisites
 
 - Docker ([Installation guide](https://docs.docker.com/get-started/))
