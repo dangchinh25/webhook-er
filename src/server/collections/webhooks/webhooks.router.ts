@@ -1,9 +1,10 @@
 import { Webhook } from '../../../db';
-import { publishMessage as publishQstashMessage } from '../../lib/qstash';
 import { publicProcedure, router } from '../../trpc';
 import { createWebhook } from './webhooks.service';
 import { CreateWebhooksResponse } from './webhooks.types';
 import { createWebhookSchema, createWebhooksSchema } from './webhooks.validation';
+import { env } from '../../../../config';
+import { publishMessage as publishQstashMessage } from '../../lib/qstash';
 
 export const webhooksRouter = router( {
     createWebhook: publicProcedure
@@ -48,7 +49,7 @@ export const webhooksRouter = router( {
             const createWebhooksResults = await Promise.all( createWebhookPromises );
             const successCreateWebhooksParams: ( typeof createWebhookSchema['_input'] )[] = [];
             const successCreateWebhooks: ( typeof Webhook.$inferSelect )[] = [];
-            const publishQstashMessagesPromises: Promise<Awaited<ReturnType<typeof publishQstashMessage>>>[] = [];
+            const publishQstashMessagesPromises: ReturnType<typeof publishQstashMessageQueuedWebhook>[] = [];
 
             createWebhooksResultsIteration:
             for ( let i = 0; i < createWebhooksParams.length; i++ ) {
@@ -67,10 +68,7 @@ export const webhooksRouter = router( {
                 successCreateWebhooks.push( createWebhookResult.value );
 
                 publishQstashMessagesPromises.push(
-                    publishQstashMessage( {
-                        destinationUrl: createWebhookResult.value.deliveryAddress,
-                        payload: createWebhookResult.value.payload as Record<string, unknown>
-                    } )
+                    publishQstashMessageQueuedWebhook( createWebhookResult.value.id )
                 );
             }
 
@@ -98,3 +96,12 @@ export const webhooksRouter = router( {
             return createWebhooksResponse;
         } )
 } );
+
+const publishQstashMessageQueuedWebhook = async (
+    webhookId: number
+): ReturnType<typeof publishQstashMessage> => {
+    return await publishQstashMessage( {
+        destinationUrl: `${ env.HOST_URL }/api/queued-webhooks`,
+        payload: { webhookId }
+    } );
+};

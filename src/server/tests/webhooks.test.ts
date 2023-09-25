@@ -75,12 +75,12 @@ describe( 'createWebhooks', () => {
 
             expect( publishMessageSpy ).toHaveBeenCalledTimes( 2 );
             expect( publishMessageSpy ).toHaveBeenCalledWith( {
-                payload: input.webhooks[ 0 ].payload,
-                destinationUrl: input.webhooks[ 0 ].deliveryAddress
+                payload: { webhookId: createWebhook1Result.value.id },
+                destinationUrl: 'http://localhost:3000/api/queued-webhooks'
             } );
             expect( publishMessageSpy ).toHaveBeenCalledWith( {
-                payload: input.webhooks[ 1 ].payload,
-                destinationUrl: input.webhooks[ 1 ].deliveryAddress
+                payload: { webhookId: createWebhook2Result.value.id },
+                destinationUrl: 'http://localhost:3000/api/queued-webhooks'
             } );
 
             expect( createWebhooksResult ).toStrictEqual( {
@@ -135,15 +135,16 @@ describe( 'createWebhooks', () => {
             } );
 
             const createWebhook1Result = await createWebhookSpy.mock.results[ 0 ].value;
+            const createWebhook2Result = await createWebhookSpy.mock.results[ 1 ].value;
 
             expect( publishMessageSpy ).toHaveBeenCalledTimes( 2 );
             expect( publishMessageSpy ).toHaveBeenCalledWith( {
-                payload: input.webhooks[ 0 ].payload,
-                destinationUrl: input.webhooks[ 0 ].deliveryAddress
+                payload: { webhookId: createWebhook1Result.value.id },
+                destinationUrl: 'http://localhost:3000/api/queued-webhooks'
             } );
             expect( publishMessageSpy ).toHaveBeenCalledWith( {
-                payload: input.webhooks[ 1 ].payload,
-                destinationUrl: input.webhooks[ 1 ].deliveryAddress
+                payload: { webhookId: createWebhook2Result.value.id },
+                destinationUrl: 'http://localhost:3000/api/queued-webhooks'
             } );
 
             expect( createWebhooksResult ).toStrictEqual( {
@@ -201,8 +202,8 @@ describe( 'createWebhooks', () => {
 
             expect( publishMessageSpy ).toHaveBeenCalledTimes( 1 );
             expect( publishMessageSpy ).toHaveBeenCalledWith( {
-                payload: input.webhooks[ 1 ].payload,
-                destinationUrl: input.webhooks[ 1 ].deliveryAddress
+                payload: { webhookId: createWebhook2Result.value.id },
+                destinationUrl: 'http://localhost:3000/api/queued-webhooks'
             } );
 
             expect( createWebhooksResult ).toStrictEqual( {
