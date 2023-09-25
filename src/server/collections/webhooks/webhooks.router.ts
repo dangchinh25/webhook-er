@@ -101,7 +101,7 @@ const publishQstashMessageQueuedWebhook = async (
     webhookId: number
 ): ReturnType<typeof publishQstashMessage> => {
     return await publishQstashMessage( {
-        destinationUrl: `${ env.HOST_URL }/api/queued-webhooks`,
+        destinationUrl: `https://${ env.VERCEL_URL }/api/queued-webhooks`,
         payload: { webhookId }
     } );
 };

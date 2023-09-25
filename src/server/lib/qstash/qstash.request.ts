@@ -32,8 +32,6 @@ export const qstashServiceRequest = async <T>( {
             data: payload
         };
 
-        console.log( JSON.stringify( axiosInstanceParams ) );
-
         const response = await axiosInstance( axiosInstanceParams );
 
         return success( response?.data as T );

@@ -76,11 +76,11 @@ describe( 'createWebhooks', () => {
             expect( publishMessageSpy ).toHaveBeenCalledTimes( 2 );
             expect( publishMessageSpy ).toHaveBeenCalledWith( {
                 payload: { webhookId: createWebhook1Result.value.id },
-                destinationUrl: 'http://localhost:3000/api/queued-webhooks'
+                destinationUrl: 'https://localhost:3000/api/queued-webhooks'
             } );
             expect( publishMessageSpy ).toHaveBeenCalledWith( {
                 payload: { webhookId: createWebhook2Result.value.id },
-                destinationUrl: 'http://localhost:3000/api/queued-webhooks'
+                destinationUrl: 'https://localhost:3000/api/queued-webhooks'
             } );
 
             expect( createWebhooksResult ).toStrictEqual( {
@@ -140,11 +140,11 @@ describe( 'createWebhooks', () => {
             expect( publishMessageSpy ).toHaveBeenCalledTimes( 2 );
             expect( publishMessageSpy ).toHaveBeenCalledWith( {
                 payload: { webhookId: createWebhook1Result.value.id },
-                destinationUrl: 'http://localhost:3000/api/queued-webhooks'
+                destinationUrl: 'https://localhost:3000/api/queued-webhooks'
             } );
             expect( publishMessageSpy ).toHaveBeenCalledWith( {
                 payload: { webhookId: createWebhook2Result.value.id },
-                destinationUrl: 'http://localhost:3000/api/queued-webhooks'
+                destinationUrl: 'https://localhost:3000/api/queued-webhooks'
             } );
 
             expect( createWebhooksResult ).toStrictEqual( {
@@ -203,7 +203,7 @@ describe( 'createWebhooks', () => {
             expect( publishMessageSpy ).toHaveBeenCalledTimes( 1 );
             expect( publishMessageSpy ).toHaveBeenCalledWith( {
                 payload: { webhookId: createWebhook2Result.value.id },
-                destinationUrl: 'http://localhost:3000/api/queued-webhooks'
+                destinationUrl: 'https://localhost:3000/api/queued-webhooks'
             } );
 
             expect( createWebhooksResult ).toStrictEqual( {

@@ -10,7 +10,7 @@ export function Provider({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
     trpc.createClient({
-      links: [httpBatchLink({ url: `${env.HOST_URL}/api` })],
+      links: [httpBatchLink({ url: `https://${env.VERCEL_URL}/api` })],
     })
   );
 
