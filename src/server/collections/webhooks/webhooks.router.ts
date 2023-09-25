@@ -4,7 +4,10 @@ import { createWebhook } from './webhooks.service';
 import { CreateWebhooksResponse } from './webhooks.types';
 import { createWebhookSchema, createWebhooksSchema } from './webhooks.validation';
 import { env } from '../../../../config';
-import { publishMessage as publishQstashMessage } from '../../lib/qstash';
+import {
+    publishMessage as publishQstashMessage,
+    publishMessageWithDelay as publishQstashMessageWithDelay
+} from '../../lib/qstash';
 
 export const webhooksRouter = router( {
     createWebhook: publicProcedure
@@ -67,9 +70,18 @@ export const webhooksRouter = router( {
                 successCreateWebhooksParams.push( createWebhooksParams[ i ] );
                 successCreateWebhooks.push( createWebhookResult.value );
 
-                publishQstashMessagesPromises.push(
-                    publishQstashMessageQueuedWebhook( createWebhookResult.value.id )
-                );
+                if ( createWebhooksParams[ i ].deliveryTime ) {
+                    publishQstashMessagesPromises.push(
+                        publishQstashMessageQueuedWebhook(
+                            createWebhookResult.value.id,
+                            createWebhooksParams[ i ].deliveryTime as string
+                        )
+                    );
+                } else {
+                    publishQstashMessagesPromises.push(
+                        publishQstashMessageQueuedWebhook( createWebhookResult.value.id )
+                    );
+                }
             }
 
             const publishQstashMessagesResults = await Promise.all( publishQstashMessagesPromises );
@@ -98,10 +110,20 @@ export const webhooksRouter = router( {
 } );
 
 const publishQstashMessageQueuedWebhook = async (
-    webhookId: number
+    webhookId: number,
+    deliveryTime?: string | Date
 ): ReturnType<typeof publishQstashMessage> => {
-    return await publishQstashMessage( {
+    const publishQstashMessageParams = {
         destinationUrl: `https://${ env.VERCEL_URL }/api/queued-webhooks`,
         payload: { webhookId }
-    } );
+    };
+
+    if ( deliveryTime ) {
+        return await publishQstashMessageWithDelay(
+            publishQstashMessageParams,
+            deliveryTime
+        );
+    }
+
+    return await publishQstashMessage( publishQstashMessageParams );
 };
