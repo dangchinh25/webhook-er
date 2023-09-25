@@ -14,7 +14,8 @@ export default function Home() {
                   "payload": {
                       "data": "TEST"
                   },
-                  "deliveryAddress": "<YOUR_CUSTOM_URL>"
+                  "deliveryAddress": "<YOUR_CUSTOM_URL>",
+                  "deliveryTime"?: "<ISO8601_TIME_STRING>"
               }
           ]
       }'
