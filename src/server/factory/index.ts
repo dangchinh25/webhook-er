@@ -8,6 +8,7 @@ export class Factory {
             deliveryAddress: 'http://localhost:3000/something',
             payload: {},
             attemptNumber: 1,
+            type: 'instant',
             ...newWebhook
         };
 
