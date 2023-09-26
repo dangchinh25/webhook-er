@@ -17,7 +17,7 @@ export const Webhook = pgTable( 'webhooks', {
     deliveryAddress: text( 'delivery_address' ).notNull(),
     attemptNumber: integer( 'attempt_number' ).notNull(),
     deliveredAt: timestamp( 'delivered_at', { withTimezone: true } ),
-    type: WebhookType( 'type' ),
+    type: WebhookType( 'type' ).notNull(),
     status: WebhookStatus( 'status' ).default( 'created' )
         .notNull(),
     createdAt: timestamp( 'created_at', { withTimezone: true } ).defaultNow(),
